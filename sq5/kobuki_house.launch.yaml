@@ -1,0 +1,18 @@
+# SQ5: the Kobuki playground (house) headless with the given EasyNav parameters, plus the robot's
+# true pose from Gazebo on /gt_pose (TFMessage, child frame "kobuki").
+launch:
+- arg: {name: params_file, description: EasyNav ROS 2 parameters file}
+- include:
+    file: $(find-pkg-share easynav_playground_kobuki)/launch/easynav_gazebo_sim.launch.yaml
+    arg:
+    - {name: params_file, value: $(var params_file)}
+    - {name: gui, value: 'false'}
+    - {name: rviz, value: 'false'}
+- node:
+    pkg: ros_gz_bridge
+    exec: parameter_bridge
+    args: /world/default/pose/info@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V
+    remap:
+    - {from: /world/default/pose/info, to: /gt_pose}
+    param:
+    - {name: use_sim_time, value: true}

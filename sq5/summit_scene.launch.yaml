@@ -1,0 +1,21 @@
+# SQ5 in a Summit world, headless: the playground's simulation with a params file, plus the true
+# poses of Gazebo's entities on /gt_pose.
+launch:
+- arg: {name: params_file, description: EasyNav ROS 2 parameters file}
+- arg: {name: world, description: Gazebo world file}
+- arg: {name: world_name, description: Name of the world inside the file}
+- include:
+    file: $(find-pkg-share easynav_playground_summit)/launch/easynav_gazebo_sim.launch.yaml
+    arg:
+    - {name: params_file, value: $(var params_file)}
+    - {name: world, value: $(var world)}
+    - {name: gui, value: 'false'}
+    - {name: rviz, value: 'false'}
+- node:
+    pkg: ros_gz_bridge
+    exec: parameter_bridge
+    args: /world/$(var world_name)/pose/info@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V
+    remap:
+    - {from: /world/$(var world_name)/pose/info, to: /gt_pose}
+    param:
+    - {name: use_sim_time, value: true}

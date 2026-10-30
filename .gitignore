@@ -1,0 +1,9 @@
+data/*
+!data/MANIFEST.md
+!data/SHA256SUMS
+!data/VERSIONS.txt
+tools/build/
+sq4/build/
+bench/build/
+__pycache__/
+*.pyc

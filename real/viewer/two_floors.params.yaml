@@ -1,0 +1,56 @@
+# Two-floors map viewer: only the maps managers do real work (no simulator, no robot).
+
+controller_node:
+  ros__parameters:
+    controller_types: [dummy]
+    dummy:
+      rt_freq: 30.0
+      plugin: easynav_controller/DummyController
+
+localizer_node:
+  ros__parameters:
+    localizer_types: [dummy]
+    dummy:
+      rt_freq: 50.0
+      freq: 5.0
+      plugin: easynav_localizer/DummyLocalizer
+
+maps_manager_node:
+  ros__parameters:
+    map_types: [bonxai, navmap]
+    bonxai:
+      freq: 1.0
+      plugin: easynav_bonxai_maps_manager/BonxaiMapsManager
+      package: easynav_playground_summit_worlds
+      # Occupied 0.3 m voxels (centroids) of the prueba_03 cloud with free-space carving
+      bonxai_path_file: ../../../../navmap-paper-artifacts/data/real/two_floors_bonxai.pcd
+    navmap:
+      freq: 1.0
+      plugin: easynav_navmap_maps_manager/NavMapMapsManager
+      package: easynav_playground_summit_worlds
+      # NavMap of the prueba_03 cloud with viewpoints (0.3 m, max_dz 0.35, 40 deg, holes 10 m2,
+      # surfaces over 4 m2)
+      navmap_path_file: ../../../../navmap-paper-artifacts/data/real/two_floors_bag_vp.navmap
+
+planner_node:
+  ros__parameters:
+    planner_types: [dummy]
+    dummy:
+      freq: 1.0
+      plugin: easynav_planner/DummyPlanner
+
+sensors_node:
+  ros__parameters:
+    forget_time: 0.5
+    perception_default_frame: odom
+
+recovery_node:
+  ros__parameters:
+    recovery_manager:
+      plugin: easynav_recovery/DummyRecoveryManager
+
+system_node:
+  ros__parameters:
+    use_real_time: true
+    position_tolerance: 0.3
+    angle_tolerance: 0.15
