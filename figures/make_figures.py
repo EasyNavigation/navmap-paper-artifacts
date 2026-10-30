@@ -52,8 +52,8 @@ def garage_sq5(out):
     goals = json.load(open(f'{HERE}/../sq5/goals_garage.json'))['goals']
     tr = np.genfromtxt(trace, delimiter=',', names=True)
     floors = [0.0, 2.35, 4.7]
-    fig = plt.figure(figsize=(13, 7.2))
-    gs = fig.add_gridspec(2, 3, height_ratios=[3.2, 1])
+    fig = plt.figure(figsize=(10, 6.4))  # printed at 17 cm: labels sized for that
+    gs = fig.add_gridspec(2, 3, height_ratios=[3.0, 1.1])
     lo, hi = V.min(axis=0), V.max(axis=0)
     norm = matplotlib.colors.Normalize(-0.3, 5.2)
     for k, zf in enumerate(floors):
@@ -65,34 +65,51 @@ def garage_sq5(out):
         on = np.abs(tr['gt_z'] - zf) < 1.3
         rx, ry = tr['gt_x'].copy(), tr['gt_y'].copy()
         rx[~on] = np.nan  # breaks the line where the route is on another floor
-        ax.plot(rx, ry, 'k-', lw=1.0)
+        ax.plot(rx, ry, 'k-', lw=1.3)
         for n, g in enumerate(goals):
             if abs(g['z'] - zf) < 1.0:
-                ax.plot(g['x'], g['y'], 'o', color='red', ms=5)
-                ax.annotate(str(n + 1), (g['x'], g['y']), textcoords='offset points', xytext=(4, 3),
-                            fontsize=8, color='darkred')
+                ax.plot(g['x'], g['y'], 'o', color='red', ms=7, mec='white', mew=0.8)
+                ax.annotate(str(n + 1), (g['x'], g['y']), textcoords='offset points', xytext=(5, 4),
+                            fontsize=11, fontweight='bold', color='darkred',
+                            bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='none', alpha=0.85))
         if abs(tr['gt_z'][0] - zf) < 1.0:
-            ax.plot(tr['gt_x'][0], tr['gt_y'][0], 'k*', ms=11)
+            ax.plot(tr['gt_x'][0], tr['gt_y'][0], 'k*', ms=14, mec='white', mew=0.8)
         ax.set_xlim(lo[0], hi[0])
         ax.set_ylim(lo[1], hi[1])
         ax.set_aspect('equal')
-        ax.set_title(f'Floor {k} (z = {zf:.2f} m)', fontsize=10)
-        ax.set_xlabel('x (m)')
+        ax.set_title(f'Floor {k} (z = {zf:.2f} m)', fontsize=12)
+        ax.tick_params(labelsize=10)
+        ax.set_xlabel('x (m)', fontsize=11)
         if k == 0:
-            ax.set_ylabel('y (m)')
+            ax.set_ylabel('y (m)', fontsize=11)
     ax = fig.add_subplot(gs[1, :])
     side = z < 6.0  # the roof is not navigable and hides nothing here
     pc = PolyCollection(tri[side][:, :, [0, 2]], array=z[side], cmap='viridis', norm=norm,
                         edgecolors='none', alpha=0.35, rasterized=True)
     ax.add_collection(pc)
-    ax.plot(tr['gt_x'], tr['gt_z'], 'k-', lw=1.0, label='route driven')
-    ax.plot([g['x'] for g in goals], [g['z'] for g in goals], 'o', color='red', ms=5, label='goals')
-    ax.plot(tr['gt_x'][0], tr['gt_z'][0], 'k*', ms=11, label='start')
+    ax.plot(tr['gt_x'], tr['gt_z'], 'k-', lw=1.3, label='route driven')
+    ax.plot([g['x'] for g in goals], [g['z'] for g in goals], 'o', color='red', ms=7, mec='white',
+            mew=0.8, label='goals')
+    # The same numbers as the floor panels; goals that coincide in x and floor share one label
+    groups = []
+    for n, g in enumerate(goals):
+        for grp in groups:
+            if abs(grp['x'] - g['x']) < 1.0 and abs(grp['z'] - g['z']) < 1.0:
+                grp['n'].append(n + 1)
+                break
+        else:
+            groups.append({'x': g['x'], 'z': g['z'], 'n': [n + 1]})
+    for grp in groups:
+        ax.annotate(', '.join(map(str, grp['n'])), (grp['x'], grp['z']), textcoords='offset points',
+                    xytext=(0, 6), ha='center', fontsize=10, fontweight='bold', color='darkred',
+                    bbox=dict(boxstyle='round,pad=0.12', fc='white', ec='none', alpha=0.85))
+    ax.plot(tr['gt_x'][0], tr['gt_z'][0], 'k*', ms=14, mec='white', mew=0.8, label='start')
     ax.set_xlim(lo[0], hi[0])
     ax.set_ylim(-0.5, 5.5)
-    ax.set_xlabel('x (m)')
-    ax.set_ylabel('z (m)')
-    ax.legend(loc='upper right', fontsize=8, ncol=3)
+    ax.tick_params(labelsize=10)
+    ax.set_xlabel('x (m)', fontsize=11)
+    ax.set_ylabel('z (m)', fontsize=11)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.42), fontsize=10, ncol=3, frameon=False)
     fig.tight_layout()
     fig.savefig(f'{out}/garage_sq5.pdf', dpi=200)
     plt.close(fig)

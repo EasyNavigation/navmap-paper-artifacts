@@ -72,6 +72,8 @@ The dataset and the results were produced with these commits:
 | EasyNavigation/easynav_playgrounds | `e50bde2` (rolling, 0.5.1); the real building's maps on branch `two_floor_urjc`, `59de913` |
 | EasyNavigation/EasyNavigation | `77736d05` (rolling, after 0.5.1) |
 
+The independent episodes (`sq5/episodes/`, 2026-10-29/30) ran on later revisions, with the workspace built in Release (`-DCMAKE_BUILD_TYPE=Release`; the runs above were built without a build type, which is why their CPU figures are higher): EasyNavigation `86ea9a3c`, easynav_plugins `6228395d`, easynav_playgrounds `81913a6`, NavMap unchanged at `3c7489e`. Between the two: NavMap, the NavMap AMCL localizer and the planners did not change; the Kobuki's wheel collisions became spheres (playgrounds #26) and its lidar target became optional (#28); the costmap obstacle filter updates only within `update_distance` (5 m by default) of the robot (plugins #147); costmap/MH/fusion localizers changed (#145, #149, #151, #153, #155; not used here); an empty PointCloud2 is an empty perception (EasyNavigation #146).
+
 `run_all.sh` writes the commits it ran with to `VERSIONS.txt`.
 
 Before submission: tag the versions used for the final results and list the tags here.

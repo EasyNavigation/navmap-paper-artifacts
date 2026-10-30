@@ -46,6 +46,28 @@ of this repository run on the dataset described in [`data/MANIFEST.md`](data/MAN
 | Figures of the paper | `figures/make_figures.py <paper>/images` |
 | Everything above in order, with the previous results kept aside | `run_all.sh` |
 
+### From each table and figure of the paper to its script
+
+Inputs are under `data/` (the dataset) unless noted; outputs too. Tables are summarised on the terminal by the script named last.
+
+| Paper | Script | Inputs | Output |
+|---|---|---|---|
+| Table 1 | none (survey) | | |
+| Table 2, Figure 4 | `sq1/run_sq1.sh` → `sq1/summarize_sq1.py`; `figures/make_figures.py sq1_bars` | `clouds/*.pcd`, the worlds' meshes (`PLAYGROUND_MODELS`) | `sq1/main/*.json`, `sq1/*_gt.npz`, `sq1/*.navmap` |
+| Table 3, Figure 5 | `real/run_real.sh` → `real/eval_real.py`; `figures/make_figures.py real_building` | `rosbags/prueba_03` (or its `real/scans_03.npz`, `real/poses_03.npz`), `clouds/two_floors_map_noghosts.pcd` | `real/two_floors_03_vp.pcd`, `real/two_floors.navmap`, `real/eval/*.json` |
+| Table 4 | `sq1/run_sq1_ablation.sh` (prints the rows) | as Table 2 | `sq1/ablation/*.json` |
+| Figure 6 | `figures/make_figures.py carving` | `sq1/*.navmap` of the garage, bare and carved | |
+| Table 5 | `sq2/run_sq2.sh` | `sq1/*.navmap` | `sq2/sq2.json` |
+| Table 6, Figure 3 | `sq4/run_sq4.sh`; `figures/make_figures.py simplification` | `sq5/home2_5cm.navmap`, `sq3/*.navmap`, the playground maps | `sq4/sq4.jsonl` |
+| Table 7 | `sq5/run_sq5.sh`, `sq5/run_sq5_summit.sh` → `sq5/summarize_sq5.py` | Gazebo, the playgrounds, `sq5/goals_*.json` | `sq5/*_run*.json`, `.csv`, `.log` |
+| Table 8 | `sq5/run_sq5_episodes.sh` → `sq5/summarize_episodes.py` | as Table 7 | `sq5/episodes/{house,excavation}/*.json` |
+| Table 9 | `sq5/check_goals.py` on `tools/dist_dump`; `sq5/summarize_sq5.py` (failures by cause) | the playground NavMaps, `sq5/goals_*.json` | `sq5/goals_check_*.json` |
+| Figure 7 | a screenshot of Gazebo and RViz (not scripted) | | |
+| Figure 8 | `figures/make_figures.py garage_sq5` | `sq5/summit_garage_run1.csv`, the garage NavMap | |
+| Tables 10, 11 | `bench/build.sh`, `bench/run_bench.sh` (prints the rows) | `sq5/home2_5cm.navmap`, the warehouse map, `clouds/*` | `bench/*.jsonl` |
+| Table 12 | `bench/run_plan.sh` → `bench/summarize_plan.py` | the stacks' maps and parameters | `bench/plan.jsonl`, `bench/plan_summary.txt` |
+| Software revisions | `data/VERSIONS.txt` (the runs of Table 7 and before; the episodes of Table 8 in a second block) | | |
+
 The robot model is shared by the ground truth and every representation: steps up to 0.25 m,
 slopes up to 30°, 1 m of free height (`sq1/mesh_truth.py`).
 

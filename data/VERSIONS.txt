@@ -3,3 +3,10 @@ easynav_plugins        rolling e2a4f984
 easynav_playgrounds    rolling e50bde2
 EasyNavigation         rolling 77736d05
 date 2026-10-24
+
+# SQ4 as independent episodes (sq5/episodes, 2026-10-29/30), workspace built in Release
+NavMap                 rolling 3c7489e
+easynav_plugins        rolling 6228395d
+easynav_playgrounds    rolling 81913a6
+EasyNavigation         rolling 86ea9a3c
+date 2026-10-30
